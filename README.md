@@ -1,1 +1,7 @@
-# cs-dpplus-2025-11-25
+# Design Patterns in C# plus some
+
+## Docs
+
+[Docs and slides](https://infotraining-team.github.io/)
+
+## Ankieta
