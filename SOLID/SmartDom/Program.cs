@@ -1,59 +1,73 @@
-﻿namespace DIP_excersise_start
+﻿namespace DIP_excersise_solution
 {
     using System;
 
-    // Moduł Niskiego Poziomu (Szczegół)
-    public class ZarowkaLED
+    // 1. Abstrakcja (Interfejs)
+    public interface IElectricDevice
     {
-        public void Zapal()
-        {
-            Console.WriteLine("Żarówka: Świecę jasnym światłem!");
-        }
-
-        public void Zgas()
-        {
-            Console.WriteLine("Żarówka: Ciemność...");
-        }
+        void On();
+        void Off();
     }
 
-    // Moduł Wysokiego Poziomu (Logika sterowania)
-    public class PrzelacznikScienny
+    // 2. Moduły niskiego poziomu (Szczegóły)
+    public class LedBulb : IElectricDevice
     {
-        // BŁĄD DIP: Bezpośrednia zależność od konkretnej klasy!
-        // Przełącznik jest "przyspawany" do żarówki.
-        private ZarowkaLED _zarowka;
-        private bool _jestWlaczony = false;
+        public void On() => Console.WriteLine("Bulb: Light on!");
+        public void Off() => Console.WriteLine("Buld: Dark!");
+    }
 
-        public PrzelacznikScienny()
+    public class Fan : IElectricDevice
+    {
+        public void On() => Console.WriteLine("Fan: Blows!");
+        public void Off() => Console.WriteLine("Fan: Stops");
+    }
+
+    // 3. Moduł Wysokiego Poziomu
+    // Nie wie, czym steruje. Wie tylko, że to coś ma metody On/Off.
+    public class WallSwitch
+    {
+        private readonly IElectricDevice _device;
+        private bool _isOn = false;
+
+        // Wstrzykiwanie zależności (Dependency Injection) umożliwia DIP
+        public WallSwitch(IElectricDevice device)
         {
-            _zarowka = new ZarowkaLED(); // Twarda zależność (Tight Coupling)
+            _device = device;
         }
 
-        public void Przelacz()
+        public void Switch()
         {
-            if (_jestWlaczony)
+            if (_isOn)
             {
-                _zarowka.Zgas();
-                _jestWlaczony = false;
+                _device.Off();
+                _isOn = false;
             }
             else
             {
-                _zarowka.Zapal();
-                _jestWlaczony = true;
+                _device.On();
+                _isOn = true;
             }
         }
     }
 
+    // 4. Composition Root (Sklejanie całości)
     public class Program
     {
         public static void Main()
         {
-            var przelacznik = new PrzelacznikScienny();
-            przelacznik.Przelacz(); // Włącz
-            przelacznik.Przelacz(); // Wyłącz
+            // Scenariusz 1: Światło
+            IElectricDevice bulb = new LedBulb();
+            var wallSwitch = new WallSwitch(bulb);
 
-            // Zadanie: Spróbuj podłączyć tu Wentylator bez psucia klasy PrzelacznikScienny.
-            // Spoiler: Nie da się w obecnym kodzie.
+            Console.WriteLine("--- Light Test ---");
+            wallSwitch.Switch();
+
+            // Scenariusz 2: Fan (Działa bez zmiany kodu przełącznika!)
+            IElectricDevice fan = new Fan();
+            var fanSwitch = new WallSwitch(fan);
+
+            Console.WriteLine("\n--- Fan Test ---");
+            fanSwitch.Switch();
         }
     }
 }
