@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BlockingCollectionFun/BlockingCollectionFun.csproj" />
+  <Project Path="SimpleRaceCondition/SimpleRaceCondition.csproj" />
+  <Project Path="TasksWhenAny/TasksWhenAny.csproj" />
+  <Project Path="ThreadsFun/ThreadsFun.csproj" />
+</Solution>
