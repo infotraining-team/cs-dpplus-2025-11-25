@@ -1,4 +1,6 @@
-﻿namespace Linq_usage
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Linq_usage
 {
     public class Product
     {
@@ -20,6 +22,53 @@
                 new Product { Name = "Tea", Category = "Groceries", Price = 15 },
                 new Product { Name = "Monitor", Category = "Electronics", Price = 800 }
             };
+
+            var expensive = products
+                .Where(p => p.Category == "Electronics" && p.Price > 200)
+                .OrderBy(p => p.Name);
+
+            foreach (Product p in expensive)
+            {
+                Console.WriteLine(p.Name);
+            }
+
+            var cheapest = products
+                .Where(p => p.Category == "Groceries")
+                .OrderBy(p => p.Price)
+                .FirstOrDefault();
+
+            Console.WriteLine($"Cheapest = {cheapest.Name}");
+
+            var productSummary = products
+                .Where(p => p.Price > 100)
+                .OrderByDescending(p => p.Price)
+                .Select(p => new { p.Name, p.Price })
+                .ToList();
+
+            foreach (var item in productSummary)
+            {
+                Console.WriteLine($"{item.Name} costs {item.Price}");
+            }
+
+            //---- GrouBy
+
+            var productGroups = products
+                .GroupBy(p => p.Category);
+
+            foreach (var group in productGroups)
+            {
+                Console.WriteLine($"Category : {group.Key}");
+                foreach (var prod in group)
+                {
+                    Console.WriteLine($" ---- {prod.Name}");
+                }
+            }
+
+            foreach (var group in productGroups)
+            {
+                Console.WriteLine($"Category : {group.Key}");
+                Console.WriteLine($" Average price {group.Average(p=> p.Price)}");
+            }
         }
     }
 }
