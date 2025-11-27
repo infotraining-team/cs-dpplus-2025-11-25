@@ -1,13 +1,28 @@
 ﻿using System;
 
+public interface IAttackStrategy
+{
+    void Attack(string target);
+}
+
+
+public class StabAttack : IAttackStrategy
+{
+    public void Attack(string target)
+    {
+        Console.WriteLine($"Stabbed the {target}");
+    }
+}
 // BAD CODE: Violation of OCP (Open/Closed Principle) and SRP (Single Responsibility Principle)
 public class Monster
 {
+    private IAttackStrategy _attackStrategy;
     public string Type { get; set; }
     public int Health { get; set; }
 
-    public Monster(string type, int health)
+    public Monster(string type, int health, IAttackStrategy strategy)
     {
+        _attackStrategy = strategy;
         Type = type;
         Health = health;
     }
@@ -28,6 +43,8 @@ public class Monster
         {
             Console.WriteLine($"Zombie bites {target} for 10 damage. {target} is infected.");
         }
+
+        _attackStrategy.Attack(target);
     }
 
     public void TakeDamage(int amount)
@@ -42,6 +59,14 @@ public class Monster
         {
             Console.WriteLine($"Monster {Type} has died!");
         }
+    }
+}
+
+public static class MonsterFactory
+{
+    public static Monster CreateGoblin()
+    {
+        return new Monster("Goblin", 20)
     }
 }
 

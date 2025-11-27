@@ -1,5 +1,8 @@
 <Solution>
+  <Project Path="Command/Command.csproj" />
   <Project Path="Composite/Composite.csproj" />
   <Project Path="Decorator/Decorator.csproj" />
   <Project Path="Excersise/Excersise.csproj" />
+  <Project Path="Observer/Observer.csproj" />
+  <Project Path="Visitor/Visitor.csproj" />
 </Solution>
