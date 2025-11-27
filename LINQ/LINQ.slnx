@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Aggregate/Aggregate.csproj" />
+  <Project Path="ExpressionsConsoleApp1/ExpressionsConsoleApp1.csproj" />
   <Project Path="Heroes/Heroes.csproj" />
   <Project Path="LINQ-start/LINQ-start.csproj" />
   <Project Path="Linq-usage/Linq-usage.csproj" />

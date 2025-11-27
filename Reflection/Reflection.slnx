@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="PluginDLL/PluginDLL.csproj" />
+  <Project Path="Reflection/Reflection.csproj" />
+</Solution>

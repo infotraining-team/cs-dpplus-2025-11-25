@@ -16,21 +16,70 @@ public class Program
 
         /*
         High-Level Premium: Znajdź nazwy wszystkich bohaterów (tylko nazwy),
-        którzy mają poziom wyższy niż 40, ale należą tylko do graczy Premium.
+        którzy mają poziom wyższy niż 40, ale należą tylko do graczy Premium.*/
 
-        Inventory Inspector (SelectMany): Wypisz nazwy wszystkich magicznych przedmiotów 
+        var q1 = players
+            .Where(p => p.IsPremium)
+            .SelectMany(p => p.Heroes)
+            .Where(h => h.Level > 40)
+            .Select(h => h.Name);
+
+        Console.WriteLine(string.Join(", ", q1));
+
+        /*Inventory Inspector (SelectMany): Wypisz nazwy wszystkich magicznych przedmiotów
         (IsMagic == true) posiadanych przez wszystkich graczy z Polski.
-        Lista ma być płaska (bez podziału na graczy).
+        Lista ma być płaska (bez podziału na graczy).*/
 
-        Class Balance (GroupBy): Policz, ilu jest bohaterów w każdej z klas (Warrior, Mage etc.).
-        Wynik powinien wyglądać np.: Mage: 2, Warrior: 2.
+        var q2 = players
+            .Where(p => p.Country == "Poland")
+            .SelectMany(p => p.Heroes)
+            .SelectMany(h => h.Inventory)
+            .Where(i => i.IsMagic)
+            .Select(i => i.Name);
 
-        The Richest Player (Sum & Aggregation): Znajdź gracza, który posiada łącznie "najdroższy" inwentarz
-        (suma Value wszystkich przedmiotów u wszystkich jego bohaterów). Wypisz nick gracza i łączną wartość.
+        Console.WriteLine(string.Join(", ", q2));
 
-        Average Level (Bonus): Oblicz średni poziom bohatera dla graczy z każdego kraju.
+        /*Class Balance (GroupBy): Policz, ilu jest bohaterów w każdej z klas (Warrior, Mage etc.).
+        Wynik powinien wyglądać np.: Mage: 2, Warrior: 2.*/
+
+        Console.WriteLine("\n--- ZADANIE 3: Hero Count by Class ---");
+        var q3 = players
+            .SelectMany(p => p.Heroes)
+            .GroupBy(h => h.Class)                 
+            .Select(g => new { Class = g.Key, Count = g.Count() });
+
+        foreach (var item in q3)
+            Console.WriteLine($"{item.Class}: {item.Count}");
+
+        /*The Richest Player (Sum & Aggregation): Znajdź gracza, który posiada łącznie "najdroższy" inwentarz
+        (suma Value wszystkich przedmiotów u wszystkich jego bohaterów). Wypisz nick gracza i łączną wartość.*/
+
+        Console.WriteLine("\n--- ZADANIE 4: Richest Player ---");
+        var q4 = players
+            .Select(p => new
+            {
+                Name = p.UserName,
+                TotalWealth = p.Heroes
+                    .SelectMany(h => h.Inventory)
+                    .Sum(i => i.Value)
+            })
+            .OrderByDescending(x => x.TotalWealth)   // Sortuj malejąco
+            .FirstOrDefault();                       // Weź pierwszego
+
+        Console.WriteLine($"Winner: {q4?.Name} with ${q4?.TotalWealth}");
+
+        /*Average Level (Bonus): Oblicz średni poziom bohatera dla graczy z każdego kraju.
          */
+        var q5 = players
+            .GroupBy(p => p.Country)
+            .Select(g => new
+            {
+                Country = g.Key,
+                AvgLevel = g.SelectMany(p => p.Heroes).Average(h => h.Level)
+            });
 
+        foreach (var item in q5)
+            Console.WriteLine($"{item.Country}: {item.AvgLevel:F1}");
     }
 
     public static List<Player> GetGameData()
