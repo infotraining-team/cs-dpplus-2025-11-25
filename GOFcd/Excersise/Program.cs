@@ -66,7 +66,7 @@ public static class MonsterFactory
 {
     public static Monster CreateGoblin()
     {
-        return new Monster("Goblin", 20)
+        return new Monster("Goblin", 20, new StabAttack());
     }
 }
 
